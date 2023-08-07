@@ -106,7 +106,7 @@ include("adminheader.php");
             
             <legend> Insert Event</legend>
             
-                <form action="events.php" method="post">
+                <form action="insertevents.php" method="post">
                 <label for="event_name">Event Name:- 
                     <input type="text" name="event_name" id="event_name" size="100" required>
                 </label>
@@ -119,7 +119,7 @@ include("adminheader.php");
                             {
                             die("Connection Error!");
                             }
-                            $sql="SELECT * FROM categories";
+                            $sql="SELECT * FROM categories WHERE type='event'";
                             $categories=$connection->query($sql);
                             foreach($categories as $category)
                             {
@@ -134,8 +134,22 @@ include("adminheader.php");
                     </textarea>
                 </label>
                 <br> <br>
-                <label for="event_name">Event 
-                    Organizers:- <input type="text" name="event_organizers" id="event_organizers" size="100" required>
+                <label for="event_organizers">Event Organizer:- 
+                    <select name="event_organizers" id="event_organizers" required>
+                        <?php
+                            $connection= new mysqli("localhost","root","","eventful");
+                            if($connection->connect_errno!=0)
+                            {
+                            die("Connection Error!");
+                            }
+                            $sql="SELECT * FROM categories WHERE type='organizer'";
+                            $categories=$connection->query($sql);
+                            foreach($categories as $category)
+                            {
+                            echo("<option value=".$category['category_name'].">".$category['category_name']."</option>");
+                            }
+                        ?>
+                    </select>
                 </label>
                 <br> <br>
                 <label for="event_startdate">Event Start Date:- 

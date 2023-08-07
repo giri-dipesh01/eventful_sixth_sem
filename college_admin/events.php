@@ -95,32 +95,58 @@ include("adminheader.php");
             <fieldset>
                 <a href="insertevents.php"><button>New</button></a>
                 <br> <br>
-                <div class="card-container">
-                    <?php
-                    $sql="SELECT * FROM events ORDER BY event_startdate ASC";
-                    $result=$connection->query($sql);
-                    foreach($result as $row)
-                    {
-                        echo("
-                        <div class='card'>
-                        <img src='Images/logo2.png' alt='Avatar' style='width:100%'>
-                        <div class='container'>
-                        <h4><b>".$row['event_name']."</b></h4> 
-                        <h4>Event Category: <b>".$row['event_category']."</b></h4>
-                        <h4>Event Date: <b>".$row['event_startdate']." - ".$row['event_enddate']."</b></h4> 
-                        <h4>Event Organizers: <b>".$row['event_organizers']."</b></h4>
-                        </div>
-
-                        <form action='updateevents.php' method='post'>
-                        <input type='submit' name='view' value='View'>
-                        <input type='hidden' name='eid' id='eid' value=".$row['event_id'].">
-                        </form>
-                        </div>
-                        ");
-                    }
-                    ?> 
-                </div>
-            </fieldset>
+                <table border='1' width="100%">
+        <tr>
+            <th style="width:1%">#</th>
+            <th style="width:20%">Name</th>
+            <th style="width:20%">Organizer</th>
+            <th style="width:10%">Start Date</th>
+            <th style="width:10%">End Date</th>
+            <th style="width:10%">Category</th>
+            <th>Action</th> 
+        </tr>
+        <?php
+            $connection = new mysqli("localhost","root","","eventful");
+            if($connection->connect_errno != 0){
+                die("Connection failed");
+            }
+            
+            $sql = "SELECT * FROM events";
+            $i = 1;
+            if($result = $connection->query($sql))
+            {
+                while($row = $result->fetch_assoc())
+                {
+                    echo 
+                    "
+                        <tr>
+                            <td>".$i++."</td>
+                            <td>".$row['event_name']."</td>
+                            <td>".$row['event_organizers']."</td>
+                            <td>".$row['event_startdate']."</td>
+                            <td>".$row['event_enddate']."</td>
+                            <td>".$row['event_category']."</td>
+                            <td>
+                                <form action='updateevents.php' method='post'>
+                                    <input type='hidden' value='".$row['event_id']."' name='eid'>
+                                    <input type='submit' value='View' name='view'>
+                                </form>  
+                            </td>           
+                        </tr>
+                    ";
+                }
+            }
+        ?>  
+        <tr>
+        <th style="width:1%">#</th>
+            <th style="width:20%">Name</th>
+            <th style="width:20%">Organizer</th>
+            <th style="width:10%">Start Date</th>
+            <th style="width:10%">End Date</th>
+            <th style="width:10%">Category</th>
+            <th>Action</th> 
+        </tr>    
+    </table>
         </div>
     </div>
 </section>

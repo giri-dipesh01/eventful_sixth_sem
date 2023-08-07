@@ -1,7 +1,8 @@
 <?php
 include("studentsheader.php");
 ?>
-    <div class="dash-content">
+
+    <div class= "dash-content">
         <div class="overview">
             <div class="title">
                 <i class="uil uil-tachometer-fast-alt"></i>
@@ -22,13 +23,47 @@ include("studentsheader.php");
                         echo ("Good Evening $full_name!");
                     }
                 ?>
-                </span>
+                </span> <br>
+                
             </div>
-        </div>
             <div class="activity">
                 <div class="title">
                     <i class="uil uil-clock-three"></i>
-                    <span class="text">List of Events of Your Interests</span> 
+                    <span class="text">Update Your Interests</span>      
+                </div>
+                <!-- Updated Checkbox Layout -->
+                <div class="checkbox-group">
+                    <form action="students.php" method="post" enctype="multipart/form-data">
+                    <label>
+                    <input type="checkbox" id="Sports" name="interests[]" value="Sports">
+                        Sports
+                    </label> 
+                    <label>
+                    <input type="checkbox" id="InternetOfThings" name="interests[]" value="Internet of Things">
+                        Internet of Things
+                    </label> 
+                    <label>
+                    <input type="checkbox" id="Programming" name="interests[]" value="Programming">
+                    Programming
+                    </label> 
+                    <label>
+                    <input type="checkbox" id="Art_Design" name="interests[]" value="Art & Design">
+                    Art & Design
+                    </label> 
+                    <label>
+                    <input type="checkbox" id="Sports" name="interests[]" value="Musical & Cultural Events">
+                        Musical & Cultural Events
+                    </label> 
+                    <label>
+                    <input type="checkbox" id="Hackathon" name="interests[]" value="Hackathons">
+                        Hackathons
+                    </label> 
+                    <label>
+                    <input type="checkbox" id="Others" name="interests[]" value="Others">
+                        Others
+                    </label> <br>
+                    <input type="submit" value="Submit" name="check_box_submit">
+                    </form>
                 </div>
             </div>
     </div> 
@@ -36,3 +71,27 @@ include("studentsheader.php");
 <script src="script.js"></script>
 </body>
 </html>
+
+<?php
+if (isset($_POST['check_box_submit'])) 
+    {
+        $checkbox1=$_POST['interests'];  
+        $chk="";  
+        foreach($checkbox1 as $chk1)  
+        {  
+            $chk .= $chk1.",";  
+        }
+        $interestsql = "UPDATE students_profile SET interests='$chk' WHERE email='$email'";
+        if ($connection->query($interestsql) === TRUE) {
+            echo"<script> 
+            alert('Interests Updated successfully: $chk<br>');
+            </script>";
+        } 
+        else 
+        {   
+            echo"<script> 
+            alert('Interests Updated successfully: . $connection->error<br>');
+            </script>";
+        }
+    }
+?>

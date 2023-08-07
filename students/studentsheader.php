@@ -104,9 +104,36 @@
       input[type="hidden"] {
       display: none;
       }
+     /* Checkbox Styles */
+     .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked {
+            background-color: #9784bb;
+            border-color: #9784bb;
+        }
 
     </style>
-     
     <!----===== Iconscout CSS ===== -->
     <link rel="stylesheet" href="../css/line.css">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
