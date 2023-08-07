@@ -110,7 +110,7 @@ if(isset($_POST['update_event']))
                 {
                     die("connection failed");
                 }
-                $id=$_POST['eid'];
+                $id=$_POST['view'];
                 $sql="SELECT * FROM events WHERE event_id='$id'";
                  if($result = $conn->query($sql))
                 { $row = $result->fetch_assoc();}
@@ -126,8 +126,22 @@ if(isset($_POST['update_event']))
                     </textarea>
                 </label>
                 <br> <br>
-                <label for="uo">Event 
-                Organizers:- <input type="text" name="uo" id="uo" size="100" value="<?php echo $row['event_organizers']?>" >
+                <label for="uo">Event Organizer:- 
+                    <select name="uo" id="uo" required>
+                        <?php
+                            $connection= new mysqli("localhost","root","","eventful");
+                            if($connection->connect_errno!=0)
+                            {
+                            die("Connection Error!");
+                            }
+                            $sql="SELECT * FROM categories WHERE type='organizer'";
+                            $categories=$connection->query($sql);
+                            foreach($categories as $category)
+                            {
+                            echo("<option value=".$category['category_name'].">".$category['category_name']."</option>");
+                            }
+                        ?>
+                    </select>
                 </label>
                 <br> <br>
                 <label for="uc">Event Category:- 
@@ -138,7 +152,7 @@ if(isset($_POST['update_event']))
                           {
                             die("Connection Error!");
                           }
-                          $sql="SELECT * FROM categories";
+                          $sql="SELECT * FROM categories WHERE type='event'";
                           $categories=$connection->query($sql);
                           foreach($categories as $category)
                             {
