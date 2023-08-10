@@ -1,27 +1,40 @@
 <?php
 include("adminheader.php");
-    if(isset($_POST["event_entry"]))
+
+if (isset($_POST["event_entry"])) {
+    $event_name = $_POST["event_name"];
+    $event_description = $_POST["event_description"];
+    $event_startdate = $_POST["event_startdate"];
+    $event_enddate = $_POST["event_enddate"];
+    $event_organizers = $_POST["event_organizers"];
+    $event_category = $_POST["event_category"];
+    echo $event_category.$event_organizers;
+
+    $sql = "INSERT INTO events(event_name, event_description, event_organizers, event_startdate, event_enddate, event_category) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+
+    if ($stmt = $connection->prepare($sql)) 
+    {
+        $stmt->bind_param("ssssss", $event_name, $event_description, $event_organizers, $event_startdate, $event_enddate, $event_category);
+
+        if ($stmt->execute()) 
         {
-            $event_name=$_POST["event_name"]; 
-            $event_description=$_POST["event_description"]; 
-            $event_startdate=$_POST["event_startdate"]; 
-            $event_enddate=$_POST["event_enddate"]; 
-            $event_organizers=$_POST["event_organizers"]; 
-            $event_category=$_POST["event_category"]; 
-        
-            $sql="INSERT INTO events(event_name,event_description,event_organizers,event_startdate,event_enddate,event_category) 
-            VALUES ('$event_name','$event_description','$event_organizers','$event_startdate','$event_enddate','$event_category')";
-        
-            if($result = $connection->query($sql))
-            {
-                header("Location:events.php");
-            }
-        
-            else
-            {
-                echo("Error");
-            } 
-        }  
+            $stmt->close();
+            header("Location: events.php");
+            exit();
+        } 
+        else
+        {
+            echo "Error: " . $stmt->error;
+        }
+
+        $stmt->close();
+    } 
+    else 
+    {
+        echo "Error preparing statement: " . $connection->error;
+    }
+}
 ?>
 <style>
     fieldset {
@@ -84,7 +97,6 @@ include("adminheader.php");
     }
 </style>
 
-
 <section class="dashboard">
     <div class="top">
         <i class="uil uil-bars sidebar-toggle"></i>
@@ -112,22 +124,24 @@ include("adminheader.php");
                 </label>
                 <br> <br>
                 <label for="event_category">Event Category:- 
-                    <select name="event_category" id="event_category" required>
-                        <?php
-                            $connection= new mysqli("localhost","root","","eventful");
-                            if($connection->connect_errno!=0)
-                            {
-                            die("Connection Error!");
-                            }
-                            $sql="SELECT * FROM categories WHERE type='event'";
-                            $categories=$connection->query($sql);
-                            foreach($categories as $category)
-                            {
-                            echo("<option value=".$category['category_name'].">".$category['category_name']."</option>");
-                            }
-                        ?>
-                    </select>
-                </label>
+    <select name="event_category" id="event_category" required>
+        <?php
+        $connection = new mysqli("localhost", "root", "", "eventful");
+        if ($connection->connect_errno != 0) {
+            die("Connection Error!");
+        }
+        $sql = "SELECT * FROM categories WHERE type='event'";
+        $categories = $connection->query($sql);
+        if ($categories) {
+            foreach ($categories as $category) {
+                echo "<option value='" . $category['category_name'] . "'>" . $category['category_name'] . "</option>";
+            }
+        } else {
+            echo "No categories found.";
+        }
+        ?>
+    </select>
+</label>
                 <br> <br>
                 <label for="event_description">Event Description:- 
                     <textarea name="event_description" id="event_description" cols="100" rows="5" required>
@@ -135,21 +149,19 @@ include("adminheader.php");
                 </label>
                 <br> <br>
                 <label for="event_organizers">Event Organizer:- 
-                    <select name="event_organizers" id="event_organizers" required>
-                        <?php
-                            $connection= new mysqli("localhost","root","","eventful");
-                            if($connection->connect_errno!=0)
-                            {
-                            die("Connection Error!");
-                            }
-                            $sql="SELECT * FROM categories WHERE type='organizer'";
-                            $categories=$connection->query($sql);
-                            foreach($categories as $category)
-                            {
-                            echo("<option value=".$category['category_name'].">".$category['category_name']."</option>");
-                            }
-                        ?>
-                    </select>
+                <select name="event_organizers" id="event_organizers" required>
+                <?php
+                $connection = new mysqli("localhost", "root", "", "eventful");
+                if ($connection->connect_errno != 0) {
+            die("Connection Error!");
+                }
+                $sql = "SELECT * FROM categories WHERE type='organizer'";
+                $categories = $connection->query($sql);
+                foreach ($categories as $category) {
+                echo ("<option value='" . $category['category_name'] . "'>" . $category['category_name'] . "</option>");
+                }
+                ?>
+                </select>
                 </label>
                 <br> <br>
                 <label for="event_startdate">Event Start Date:- 

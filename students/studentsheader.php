@@ -1,40 +1,40 @@
 <?php
 // aaj PHP ko code add
 // session lai start gareko
-  $connection= new mysqli("localhost","root","","eventful");
+    $connection= new mysqli("localhost","root","","eventful");
         // Checking Database Connection
         if($connection->connect_errno!=0)
         // 0 means connected 
         {
             die("Database Connectivity Error");
         }
-  session_start(); 
+    session_start(); 
 
   // session check gareko with $_SESSION variable
-  if(!isset($_SESSION['students'])) 
-  {
+    if(!isset($_SESSION['students'])) 
+    {
     // yedi session xaina bane login ma patidine
     header("Location:../index.php"); 
-  }
+    }
 
   // yedi session xa bane
   // afno table ko nam, mero students thiyo
-  $row=$_SESSION['students']; 
+    $row=$_SESSION['students']; 
 
   // email lai store gareko admin ko table bata
-  $email=$row['email'];
-  $full_name=$row['full_name'];  
+    $email=$row['email'];
+    $full_name=$row['full_name'];  
 
   // logout ko main functionality
 
   // logout button click gareko case ma
-  if(isset($_POST['logout'])) // isset le click bako xa ki xaina check garxa
-  {
+    if(isset($_POST['logout'])) // isset le click bako xa ki xaina check garxa
+    {
     // user ko data session bata hataideu
     session_destroy();
     // ani back to login page 
     header("Location:../index.php");  
-  }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -181,18 +181,20 @@
     <div class="top">
         <i class="uil uil-bars sidebar-toggle"></i>
         <?php
-                    $sql = "SELECT * FROM students s NATURAL JOIN students_profile p WHERE s.email='$email' AND p.email='$email'";
-                    $result = $connection->query($sql);// query execution
+            $sql = "SELECT * FROM students s NATURAL JOIN students_profile p WHERE s.email='$email' AND p.email='$email'";
+            $result = $connection->query($sql);// query execution
 
-                    if ($result && $result->num_rows > 0) {
-                        $data = $result->fetch_assoc();
-                        if ($data['photo'] == '') {
-                            echo('<img class="profile-pic" src="../profile/default.png">');
-                        } else {
-                            echo ("<img class='profile-pic' src='" . $data['photo'] ."'>");
-                        }
-                    } else {
-                        echo('<img class="profile-pic" src="../profile/default.png">');
-                    }
+            if ($result && $result->num_rows > 0) {
+                $data = $result->fetch_assoc();
+                if ($data['photo'] == '') {
+                    echo('<img class="profile-pic" src="../profile/default.png">');
+                } else {
+                    echo ("<img class='profile-pic' src='" . $data['photo'] ."'>");
+                }
+            } 
+            else 
+            {
+                echo('<img class="profile-pic" src="../profile/default.png">');
+            }
         ?>
     </div>    
