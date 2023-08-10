@@ -99,10 +99,10 @@ include("adminheader.php");
         <tr>
             <th style="width:1%">#</th>
             <th style="width:20%">Name</th>
-            <th style="width:20%">Organizer</th>
+            <th style="width:30%">Organizer</th>
             <th style="width:10%">Start Date</th>
             <th style="width:10%">End Date</th>
-            <th style="width:10%">Category</th>
+            <th style="width:20%">Category</th>
             <th>Action</th> 
         </tr>
         <?php
@@ -140,10 +140,10 @@ include("adminheader.php");
         <tr>
         <th style="width:1%">#</th>
             <th style="width:20%">Name</th>
-            <th style="width:20%">Organizer</th>
+            <th style="width:30%">Organizer</th>
             <th style="width:10%">Start Date</th>
             <th style="width:10%">End Date</th>
-            <th style="width:10%">Category</th>
+            <th style="width:20%">Category</th>
             <th>Action</th> 
         </tr>    
     </table>

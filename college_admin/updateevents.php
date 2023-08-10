@@ -127,40 +127,38 @@ if(isset($_POST['update_event']))
                 </label>
                 <br> <br>
                 <label for="uo">Event Organizer:- 
-                    <select name="uo" id="uo" required>
-                        <?php
-                            $connection= new mysqli("localhost","root","","eventful");
-                            if($connection->connect_errno!=0)
-                            {
-                            die("Connection Error!");
-                            }
-                            $sql="SELECT * FROM categories WHERE type='organizer'";
-                            $categories=$connection->query($sql);
-                            foreach($categories as $category)
-                            {
-                            echo("<option value=".$category['category_name'].">".$category['category_name']."</option>");
-                            }
-                        ?>
-                    </select>
-                </label>
+    <select name="uo" id="uo" required>
+        <?php
+        $connection = new mysqli("localhost", "root", "", "eventful");
+        if ($connection->connect_errno != 0) {
+            die("Connection Error!");
+        }
+        $sql = "SELECT * FROM categories WHERE type='organizer'";
+        $categories = $connection->query($sql);
+        foreach ($categories as $category) {
+            $selected = ($category['category_name'] == $row['event_organizers']) ? 'selected' : '';
+            echo("<option value='" . $category['category_name'] . "' $selected>" . $category['category_name'] . "</option>");
+        }
+        ?>
+    </select>
+</label>
                 <br> <br>
                 <label for="uc">Event Category:- 
-                   <select name="uc" id="uc">
-                        <?php
-                            $connection= new mysqli("localhost","root","","eventful");
-                            if($connection->connect_errno!=0)
-                            {
-                            die("Connection Error!");
-                            }
-                            $sql="SELECT * FROM categories WHERE type='event'";
-                            $categories=$connection->query($sql);
-                            foreach($categories as $category)
-                            {
-                            echo("<option value=".$category['category_name'].">".$category['category_name']."</option>");
-                            }
-                        ?>     
-                    </select>
-                </label>
+    <select name="uc" id="uc">
+        <?php
+        $connection = new mysqli("localhost", "root", "", "eventful");
+        if ($connection->connect_errno != 0) {
+            die("Connection Error!");
+        }
+        $sql = "SELECT * FROM categories WHERE type='event'";
+        $categories = $connection->query($sql);
+        foreach ($categories as $category) {
+            $selected = ($category['category_name'] == $row['event_category']) ? 'selected' : '';
+            echo("<option value='" . $category['category_name'] . "' $selected>" . $category['category_name'] . "</option>");
+        }
+        ?>
+    </select>
+</label>
                 <br> <br>
                 <label for="usd">Event Start Date:- 
                 <input type="date" name="usd" id="usd" size="100" min="<?php echo date("Y-m-d");?>" value="<?php echo $row['event_startdate']?>" >
