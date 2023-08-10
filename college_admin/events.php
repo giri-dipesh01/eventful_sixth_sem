@@ -128,8 +128,8 @@ include("adminheader.php");
                             <td>".$row['event_category']."</td>
                             <td>
                                 <form action='updateevents.php' method='post'>
-                                    <input type='hidden' value='".$row['event_id']."' name='eid'>
-                                    <input type='submit' value='View' name='view'>
+                                    <input type='hidden' value='".$row['event_id']."' name='event_updateid'>
+                                    <input type='submit' value='View' name='update'>
                                 </form>  
                             </td>           
                         </tr>

@@ -100,7 +100,7 @@ if(isset($_POST['update_event']))
             <fieldset>
                 <legend> Update Event</legend>
                 <?php
-    if(isset($_POST['view']))
+    if(isset($_POST['update']))
     {
     ?>
     <form action="updateevents.php" method="POST">
@@ -110,7 +110,7 @@ if(isset($_POST['update_event']))
                 {
                     die("connection failed");
                 }
-                $id=$_POST['view'];
+                $id=$_POST['event_updateid'];
                 $sql="SELECT * FROM events WHERE event_id='$id'";
                  if($result = $conn->query($sql))
                 { $row = $result->fetch_assoc();}
@@ -146,20 +146,19 @@ if(isset($_POST['update_event']))
                 <br> <br>
                 <label for="uc">Event Category:- 
                    <select name="uc" id="uc">
-                          <?php
-                          $connection= new mysqli("localhost","root","","eventful");
-                          if($connection->connect_errno!=0)
-                          {
+                        <?php
+                            $connection= new mysqli("localhost","root","","eventful");
+                            if($connection->connect_errno!=0)
+                            {
                             die("Connection Error!");
-                          }
-                          $sql="SELECT * FROM categories WHERE type='event'";
-                          $categories=$connection->query($sql);
-                          foreach($categories as $category)
+                            }
+                            $sql="SELECT * FROM categories WHERE type='event'";
+                            $categories=$connection->query($sql);
+                            foreach($categories as $category)
                             {
                             echo("<option value=".$category['category_name'].">".$category['category_name']."</option>");
                             }
-                          ?>
-                          
+                        ?>     
                     </select>
                 </label>
                 <br> <br>
@@ -172,12 +171,12 @@ if(isset($_POST['update_event']))
                 </label>
                 <br> <br>
                 <input type="submit" name="update_event" id="update_event" >
-                <input type='hidden' name='update_id' id='update_id' value="<?php echo $row['event_id']?>">
+                <input type='hidden' name='update_id' id='update_id' value="<?php echo $row['event_id'];?>">
         
         
     </form>
     <form action='deleteevents.php' method='post'>
-                <input type='hidden' name='delete_id' value="<?php echo $row['event_id']?>" >
+                <input type='hidden' name='delete_id' value="<?php echo $row['event_id'];?>" >
                 <input type='submit'value = 'Delete' name='delete'>
         </form> 
     </form>
