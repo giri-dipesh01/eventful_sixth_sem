@@ -134,7 +134,7 @@ if (isset($_POST['cardsubmit']) && isset($_FILES['card'])) {
                 <span class="text">Update Photo</span> 
             </div>
         </div>
-    </div> 
+    </div>  
     <div>
         <div>
             <div class="passport">
@@ -178,23 +178,23 @@ if (isset($_POST['cardsubmit']) && isset($_FILES['card'])) {
                     </div>
                 </div> 
                     <div class="idcard">
-                    <form  action="updateprofile.php" method="post" enctype="multipart/form-data">
-                    <div>
-                    <?php
-                    $sql = "SELECT * FROM students s NATURAL JOIN students_profile p WHERE s.email='$email' AND p.email='$email'";
-                    $result = $connection->query($sql);// query execution
+                        <form  action="updateprofile.php" method="post" enctype="multipart/form-data">
+                        <div>
+                        <?php
+                        $sql = "SELECT * FROM students s NATURAL JOIN students_profile p WHERE s.email='$email' AND p.email='$email'";
+                        $result = $connection->query($sql);// query execution
 
-                    if ($result && $result->num_rows > 0) {
+                        if ($result && $result->num_rows > 0) {
                         $data = $result->fetch_assoc();
                         if ($data['id_card'] == '') {
                             echo('<img class="profile-pic" src="../profile/default.png">');
                         } else {
                             echo ("<img class='profile-pic' src='" . $data['id_card'] . "'>");
                         }
-                    } else {
+                        } else {
                         echo('<img class="profile-pic" src="../profile/default.png">');
-                    }
-                    ?>
+                        }
+                        ?>
                     </div>
                     <div class="p-image">
                     <?php if (isset($_GET['carderror'])) : ?>
