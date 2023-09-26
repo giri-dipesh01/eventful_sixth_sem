@@ -1,68 +1,6 @@
 <?php
 include("adminheader.php"); 
-if (isset($_POST['bannersubmit']) && isset($_FILES['banner'])) {
-    // Get the file details
-    $banner_name = $_FILES['banner']['name'];
-    $banner_size = $_FILES['banner']['size'];
-    $banner_tmp = $_FILES['banner']['tmp_name'];
-    $banner_error = $_FILES['banner']['error'];
 
-    // Get the file extension
-    $banner_extension = strtolower(pathinfo($banner_name, PATHINFO_EXTENSION));
-    $banner_id=$_POST['banner_id'];
-    // Allowed file extensions
-    $allowed_extensions = array('png', 'jpeg', 'jpg');
-
-    if ($banner_error === 0) {
-        if (!in_array($banner_extension, $allowed_extensions)) {
-            $error_var = "Invalid file format. Allowed formats: PNG, JPEG, JPG";
-            header("Location: updateevents.php?bannererror=$error_var");
-            exit;
-        } elseif ($banner_size > 5000000) { // Adjust the size limit as needed
-            $error_var = "Sorry, your file is too large. It must be less than 5MB.";
-            header("Location: updateevents.php?bannererror=$error_var");
-            exit;
-        } else {
-            // Get the image dimensions
-            $image_info = getimagesize($banner_tmp);
-            $image_width = $image_info[0];
-            $image_height = $image_info[1];
-
-            // Check image dimensions (adjust the dimensions as needed)
-            if ($image_width > 1600 || $image_height > 900) {
-                $error_var = "Image dimensions must not exceed 1600x900 pixels.";
-                header("Location: updateevents.php?bannererror=$error_var");
-                exit;
-            }
-
-            $upload_directory = "../banners/";
-            $banner_filename = uniqid() . "_" . $banner_name;
-            $target_banner = $upload_directory . $banner_filename;
-
-            if (move_uploaded_file($banner_tmp, $target_banner)) {
-                // Update the event banner path in the database
-                $sql = "UPDATE events SET event_banner='$target_banner' WHERE event_id='$banner_id'";
-                if ($connection->query($sql)) {
-                    $success = "Banner updated successfully";
-                    header("Location: updateevents.php?bannersuccess=$success");
-                    exit;
-                } else {
-                    $error_var = "Error updating event banner in the database";
-                    header("Location: updateevents.php?bannererror=$error_var");
-                    exit;
-                }
-            } else {
-                $error_var = "Error uploading the banner";
-                header("Location: updateevents.php?bannererror=$error_var");
-                exit;
-            }
-        }
-    } else {
-        $error_var = "Error uploading the banner. Please try again.";
-        header("Location: updateevents.php?bannererror=$error_var");
-        exit;
-    }
-}
 
 
 if (isset($_POST['update_event'])) {
@@ -211,45 +149,6 @@ if (isset($_POST['update_event'])) {
                 <i class="uil uil-clock-three"></i>
                 <span class="text">Events</span> 
             </div>
-            <div class="idcard">
-                <form  action="updateevents.php" method="post" enctype="multipart/form-data">
-                    <div>
-                        <?php
-                            $id=$_POST['event_updateid'];
-                            $sql = "SELECT * FROM events  WHERE event_id='$id'"; 
-                            $result = $connection->query($sql);// query execution
-
-                            if ($result && $result->num_rows > 0) 
-                            {
-                                $data = $result->fetch_assoc();
-                                if ($data['event_banner'] == '') 
-                                {
-                                echo('<img class="banner" src="../banners/default.png" width="300px" height="300px">');
-                                } 
-                                else {
-                                echo ("<img class='banner' src='" . $data['event_banner'] . "'>");
-                                }
-                            } 
-                            else 
-                            {
-                            echo('<img class="profile-pic" src="../banners/default.png" width="300px" height="300px" >');
-                            }
-                        ?>
-                    </div>
-                        <div class="p-image">
-                            <?php if (isset($_GET['bannererror'])) : ?>
-                            <p><?php echo $_GET['bannererror']; ?></p>
-                            <?php elseif (isset($_GET['bannersuccess'])) : ?>
-                            <p><?php echo $_GET['bannersuccess']; ?></p>
-                            <?php endif ?>
-                            <label for="my_file">Choose Event Banner:- </label>
-                            <span>Recommended 16:9 ratio (1600x900 is best) and < 5 MB </span> <br> <br>
-                            <input type="file" name="banner" id="banner" accept=".png, .jpeg, .jpg">
-                            <input type='hidden' name='banner_id' id='banner_id' value='<?php echo $id?>'>
-                            <input type="submit" name="bannersubmit" value="Upload">
-                        </div>
-                </form>
-            </div>
             <fieldset>
                 <legend> Update Event</legend>
                 <?php
@@ -264,7 +163,7 @@ if (isset($_POST['update_event'])) {
                 {
                     die("connection failed");
                 }
-                $id=$_POST['event_updateid'];
+                $id=$_POST['event_updateid'];         
                 $sql="SELECT * FROM events WHERE event_id='$id'";
                  if($result = $conn->query($sql))
                 { $row = $result->fetch_assoc();}
@@ -272,11 +171,11 @@ if (isset($_POST['update_event'])) {
                 ?>
         
                  <label for="un">Event Name:- 
-                    <input type="text" name="un" id="un" size="100" value="<?php echo $row['event_name']?>" >
+                    <input type="text" name="un" id="un" size="100" value="<?php echo $row['event_name'];?>" >
                 </label>
                 <br> <br>
                 <label for="ud">Event Description:- 
-                    <textarea name="ud" id="ud" cols="100" rows="5" value="<?php echo $row['event_description']?>" >
+                    <textarea name="ud" id="ud" cols="100" rows="5"> <?php echo $row['event_description'];?>
                     </textarea>
                 </label>
                 <br> <br>
@@ -328,10 +227,13 @@ if (isset($_POST['update_event'])) {
         
     </form>
     <form action='deleteevents.php' method='post'>
-                <input type='hidden' name='delete_id' value="<?php echo $row['event_id'];?>" >
+                <input type='hidden' name='delete_id' value="<?php echo $row['event_id'];?>">
                 <input type='submit'value = 'Delete' name='delete'>
-        </form> 
-    </form>
+        </form>  
+        <form action='updatebanner.php' method='post'>
+                <input type='hidden' name='banner_id' value='<?php echo $row['event_id'];?>'>
+                <input type='submit'value = 'Update Banner' name='banner_update'>
+        </form>
     <?php
     }
     ?>

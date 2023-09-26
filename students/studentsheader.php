@@ -169,9 +169,8 @@
                 </ul>
             <ul class="logout-mode">
                 <li>
-                  <form action="admin.php" method="POST">
-                    <i class="uil uil-signout"></i>
-                    <span class="link-name" type="submit" name="logout">Logout</span>
+                  <form action="students.php" method="POST">
+                  <button type="submit" name="logout"><i class="il uil-signout"></i></button>
                   </form>
                 </li>  
             </ul>

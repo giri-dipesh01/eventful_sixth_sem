@@ -20,7 +20,7 @@ if(isset($_POST['register']))
       die("Database Connectivity Error");
    }
   $select="SELECT * FORM students WHERE email='$email'";
-  $no=$connection->query($sql);
+  $no=$connection->query($select);
   if($no->num_rows>0)
   {
   echo("<script> alert('User Already Exists');</script>");

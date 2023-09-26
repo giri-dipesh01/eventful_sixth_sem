@@ -20,7 +20,7 @@ if (isset($_POST["event_entry"])) {
         if ($stmt->execute()) 
         {
             $stmt->close();
-            header("Location: events.php");
+            header("Location:events.php");
             exit();
         } 
         else
