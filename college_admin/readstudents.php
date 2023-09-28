@@ -98,20 +98,16 @@ include("adminheader.php");
             <td>TU Registration Number</td>
             <td><?php echo($row['turegno'])?></td>
             </tr> 
-            <td>6</td>    
-            <td>Semester</td>
-            <td><?php echo($row['semester'])?></td>
-            </tr>
-            <td>7</td>    
+            <td>6</td>        
             <td>Batch</td>
             <td><?php echo($row['batch'])?></td>
             </tr> 
-            <td>8</td>    
+            <td>7</td>    
             <td>Registered Date & Time</td>
             <td><?php echo($row['register_date'])?></td>
             </tr> 
             <tr>
-            <td>9</td>    
+            <td>8</td>    
             <td>ID Card</td>
             <td>
                 <?php 
@@ -131,7 +127,7 @@ include("adminheader.php");
             </td>
             </tr>
             <tr>
-            <td>10</td>    
+            <td>9</td>    
             <td>Status</td>
             <td><?php echo($row['verification'])?></td>
             </tr>

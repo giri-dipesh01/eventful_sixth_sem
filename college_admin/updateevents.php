@@ -167,9 +167,14 @@ if (isset($_POST['update_event'])) {
                 $sql="SELECT * FROM events WHERE event_id='$id'";
                  if($result = $conn->query($sql))
                 { $row = $result->fetch_assoc();}
-       
+                $image=$row['event_banner'];
+                if (empty($image)) {
+                    echo('<img class="banner" src="../banners/default.png" width="300px" height="300px">');
+                } else {
+                    echo("<img class='banner' src='" . $image . "'>");
+                }
                 ?>
-        
+                    
                  <label for="un">Event Name:- 
                     <input type="text" name="un" id="un" size="100" value="<?php echo $row['event_name'];?>" >
                 </label>

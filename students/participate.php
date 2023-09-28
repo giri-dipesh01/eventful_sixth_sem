@@ -7,6 +7,116 @@ if ($connection->connect_errno != 0) {
     die("Connection failed");
 }
 
+if (isset($_POST['participate'])) {
+    $event_id = $_POST['event_id'];
+    $rating = $_POST['rating'];
+
+    // Retrieve the student's email from the session (make sure it's stored correctly in the session)
+    session_start();
+    if (isset($_SESSION['students'])) {
+        $row = $_SESSION['students'];
+        $email = $row['email'];
+    } else {
+        die("Session data not found");
+    }
+
+    // Check if the student has already reviewed the event
+    $sql_check_review = "SELECT * FROM participation WHERE event_id = ? AND student_email = ?";
+    $stmt_check_review = $connection->prepare($sql_check_review);
+
+    if ($stmt_check_review) {
+        $stmt_check_review->bind_param('ss', $event_id, $email);
+        $stmt_check_review->execute();
+        $result_check_review = $stmt_check_review->get_result();
+
+        if ($result_check_review->num_rows > 0) {
+            // The student has already reviewed this event
+            echo "You have already reviewed this event. Your Rating: $rating";
+            
+            // Fetch and display event details
+            $sql_fetch_event = "SELECT * FROM events WHERE event_id = ?";
+            $stmt_fetch_event = $connection->prepare($sql_fetch_event);
+
+            if ($stmt_fetch_event) {
+                $stmt_fetch_event->bind_param('s', $event_id);
+                $stmt_fetch_event->execute();
+                $result_fetch_event = $stmt_fetch_event->get_result();
+
+                if ($result_fetch_event->num_rows > 0) {
+                    while ($event_row = $result_fetch_event->fetch_assoc()) {
+                        // Display event details
+                        echo "<div class='event-details'>";
+                        echo "<h2 class='event-title'>".$event_row['event_name']."</h2>";
+                        echo "<p class='event-description'>".$event_row['event_description']."</p>";
+                        echo "<p class='event-organizer'>Organizer: ".$event_row['event_organizers']."</p>";
+                        echo "<p class='event-date'>Start Date: ".$event_row['event_startdate']."</p>";
+                        echo "<p class='event-date'>End Date: ".$event_row['event_enddate']."</p>";
+                        echo "<p class='event-category'>Category: ".$event_row['event_category']."</p>";
+                        echo "</div>"; // event-details
+                    }
+                } else {
+                    echo "Event details not found.";
+                }
+
+                $stmt_fetch_event->close();
+            } else {
+                echo "Error preparing statement for fetching event details: " . $connection->error;
+            }
+        } else {
+            // The student has not reviewed this event, so insert the review
+            $sql_insert_review = "INSERT INTO participation (event_id, student_email, rating) VALUES (?, ?, ?)";
+            $stmt_insert_review = $connection->prepare($sql_insert_review);
+
+            if ($stmt_insert_review) {
+                $stmt_insert_review->bind_param('ssd', $event_id, $email, $rating);
+
+                if ($stmt_insert_review->execute()) {
+                    echo "Review recorded successfully. Your Rating: $rating";
+                    
+                    // Fetch and display event details
+                    $sql_fetch_event = "SELECT * FROM events WHERE event_id = ?";
+                    $stmt_fetch_event = $connection->prepare($sql_fetch_event);
+
+                    if ($stmt_fetch_event) {
+                        $stmt_fetch_event->bind_param('s', $event_id);
+                        $stmt_fetch_event->execute();
+                        $result_fetch_event = $stmt_fetch_event->get_result();
+
+                        if ($result_fetch_event->num_rows > 0) {
+                            while ($event_row = $result_fetch_event->fetch_assoc()) {
+                                // Display event details
+                                echo "<div class='event-details'>";
+                                echo "<h2 class='event-title'>".$event_row['event_name']."</h2>";
+                                echo "<p class='event-description'>".$event_row['event_description']."</p>";
+                                echo "<p class='event-organizer'>Organizer: ".$event_row['event_organizers']."</p>";
+                                echo "<p class='event-date'>Start Date: ".$event_row['event_startdate']."</p>";
+                                echo "<p class='event-date'>End Date: ".$event_row['event_enddate']."</p>";
+                                echo "<p class='event-category'>Category: ".$event_row['event_category']."</p>";
+                                echo "</div>"; // event-details
+                            }
+                        } else {
+                            echo "Event details not found.";
+                        }
+
+                        $stmt_fetch_event->close();
+                    } else {
+                        echo "Error preparing statement for fetching event details: " . $connection->error;
+                    }
+                } else {
+                    echo "Error recording review: " . $stmt_insert_review->error;
+                }
+
+                $stmt_insert_review->close();
+            } else {
+                echo "Error preparing statement for review: " . $connection->error;
+            }
+        }
+
+        $stmt_check_review->close();
+    } else {
+        echo "Error preparing statement for review check: " . $connection->error;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -115,7 +225,7 @@ if ($connection->connect_errno != 0) {
                 echo "<p class='event-category'>Category: ".$row['event_category']."</p>";
 
                 // Form for participating and rating
-                echo "<form action='participate_process.php' method='post'>";
+                echo "<form action='participate.php' method='post'>";
                 echo "<input type='hidden' name='event_id' value='".$row['event_id']."'>";
                 echo "<label for='rating'>Rate the Event-  </label>";
                 echo "<input type='number' name='rating' min='1' max='5' required> <br>";

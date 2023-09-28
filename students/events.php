@@ -66,8 +66,16 @@ $sql = "SELECT * FROM events";
             <!-- New event container with grid layout -->
             <div class="event-container">
                 <?php
+                // Fetch event details and calculate average rating
                 if ($result = $connection->query($sql)) {
                     while ($row = $result->fetch_assoc()) {
+                        // Calculate the average rating
+                        $event_id = $row['event_id'];
+                        $sql_avg_rating = "SELECT AVG(rating) AS avg_rating FROM participation WHERE event_id = '$event_id'";
+                        $result_avg_rating = $connection->query($sql_avg_rating);
+                        $row_avg_rating = $result_avg_rating->fetch_assoc();
+                        $averageRating = $row_avg_rating['avg_rating'];
+
                         echo "<div class='event-card'>";
                         echo "<div class='event-banner'>";
                         if ($row['event_banner'] != '') {
@@ -82,7 +90,16 @@ $sql = "SELECT * FROM events";
                         echo "<p class='event-date'>Start Date: ".$row['event_startdate']."</p><br>";
                         echo "<p class='event-date'>End Date: ".$row['event_enddate']."</p><br>";
                         echo "<p class='event-organizer'>Organizer: ".$row['event_organizers']."</p>";
-                        echo "<form action='participate.php' method='post'> <br>"; 
+
+                        // Display the 5-star rating
+                        echo "<div class='star-rating' data-rating='".$averageRating."'>";
+                        for ($i = 1; $i <= 5; $i++) {
+                            echo "<span class='star' data-rating='".$i."'>☆</span>";
+                        }
+                        echo "</div>";
+
+                        // Add the form for viewing event details
+                        echo "<form action='participate.php' method='post'> <br>";
                         echo "<input type='hidden' value='".$email."' name='student_id'>";
                         echo "<input type='hidden' value='".$row['event_id']."' name='event_id'>";
                         echo "<input type='submit' value='View' name='interest'>";
@@ -96,6 +113,46 @@ $sql = "SELECT * FROM events";
         </div>
     </div>
     </section>
+
     <script src="script.js"></script>
+    <script>
+        // JavaScript code for handling star rating interactions
+        const starContainers = document.querySelectorAll(".star-rating");
+        
+        starContainers.forEach((starContainer) => {
+            const stars = starContainer.querySelectorAll(".star");
+            let currentRating = starContainer.getAttribute("data-rating");
+
+            stars.forEach((star) => {
+                star.addEventListener("mouseover", () => {
+                    const rating = star.getAttribute("data-rating");
+                    highlightStars(stars, rating);
+                });
+
+                star.addEventListener("mouseout", () => {
+                    highlightStars(stars, currentRating);
+                });
+
+                star.addEventListener("click", () => {
+                    currentRating = star.getAttribute("data-rating");
+                    starContainer.setAttribute("data-rating", currentRating);
+                });
+            });
+
+            starContainer.addEventListener("mouseout", () => {
+                highlightStars(stars, currentRating);
+            });
+        });
+
+        function highlightStars(stars, rating) {
+            stars.forEach((star) => {
+                if (star.getAttribute("data-rating") <= rating) {
+                    star.textContent = "★"; // Filled star
+                } else {
+                    star.textContent = "☆"; // Empty star
+                }
+            });
+        }
+    </script>
 </body>
 </html>

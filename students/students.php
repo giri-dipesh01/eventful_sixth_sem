@@ -27,10 +27,30 @@ include("studentsheader.php");
                 
             </div>
             <div class="activity">
+            <p>Your Interests are:- </p>
+                <?php
+                $connection=new mysqli("localhost","root","","eventful");
+                
+                $selectsql = "SELECT * FROM `students_profile` WHERE email='$email'";
+                if($connection->connect_errno!=0)
+                // 0 means connected 
+                {
+                die("Database Connectivity Error");
+                }
+                $result = mysqli_query($connection, $selectsql);
+
+                if ($result) {
+                $row = $result->fetch_assoc();
+                echo"<p>".$row['interests']."</p>";
+                } else {
+                echo "Error: " . mysqli_error($connection);
+                }
+                ?>
                 <div class="title">
                     <i class="uil uil-clock-three"></i>
                     <span class="text">Update Your Interests</span>      
                 </div>
+                
                 <!-- Updated Checkbox Layout -->
                 <div class="checkbox-group">
                     <form action="students.php" method="post" enctype="multipart/form-data">
@@ -85,7 +105,9 @@ if (isset($_POST['check_box_submit']))
         if ($connection->query($interestsql) === TRUE) {
             echo"<script> 
             alert('Interests Updated successfully: $chk<br>');
+            window.location.href = 'students.php';
             </script>";
+            
         } 
         else 
         {   

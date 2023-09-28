@@ -1,7 +1,66 @@
 <?php
-include("adminheader.php");
+include("studentsheader.php");
 ?>
+ <style>
+        /* Table Styles */
+      table 
+      {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      }
 
+      th, td {
+      padding: 10px;
+      text-align: left;
+      }
+      
+      
+      th {
+      background-color: #7fa6d1;
+      color: var(--text-color);
+      } 
+
+      td {
+      background-color: #ffe6ac;
+      color: var(--text-color);
+      border-bottom: 1px solid var(--border-color);
+      }
+
+      tr:nth-child(even) td {
+      background-color: var(--box2-color);
+      }
+
+      tr:last-child td {
+      border-bottom: none;
+      }
+
+      tr:hover td {
+      background-color: #e6e5e5;
+      }
+
+      /* Form Styles */
+      form {
+      display: inline-block;
+      }
+
+      input[type="submit"] {
+      background-color: #9784bb;
+      color: var(--text-color);
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      }
+
+      input[type="submit"]:hover {
+      background-color: var(--box3-color);
+      }
+
+      input[type="hidden"] {
+      display: none;
+      }
+
+    </style>
 <section class="dashboard">
     <div class="top">
         <i class="uil uil-bars sidebar-toggle"></i>
@@ -56,7 +115,7 @@ include("adminheader.php");
                 die("Connection failed");
             }
             
-            $sql = "SELECT * FROM students";
+            $sql = "SELECT * FROM participation";
             $i = 1;
             if($result = $connection->query($sql))
             {
