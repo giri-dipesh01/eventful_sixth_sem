@@ -1,8 +1,5 @@
 <?php
 include("adminheader.php"); 
-
-
-
 if (isset($_POST['update_event'])) {
     $un = $_POST["un"];
     $ud = $_POST["ud"];
