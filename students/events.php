@@ -9,7 +9,6 @@ if ($connection->connect_errno != 0) {
 
 // Fetch events data from the database
 $sql = "SELECT * FROM events";
-
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +18,7 @@ $sql = "SELECT * FROM events";
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Cards</title>
-    
+
     <style>
         /* Your existing styles here... */
 
@@ -54,6 +53,27 @@ $sql = "SELECT * FROM events";
         .event-date {
             margin-top: 10px;
         }
+
+        /* New styles for the star rating */
+        .star-rating {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .star {
+            font-size: 1.5rem;
+            color: #ccc; /* Empty star color */
+            cursor: pointer;
+        }
+
+        .star.filled {
+            color: goldenrod; /* Filled star color */
+        }
+
+        .reviews {
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -71,10 +91,11 @@ $sql = "SELECT * FROM events";
                     while ($row = $result->fetch_assoc()) {
                         // Calculate the average rating
                         $event_id = $row['event_id'];
-                        $sql_avg_rating = "SELECT AVG(rating) AS avg_rating FROM participation WHERE event_id = '$event_id'";
+                        $sql_avg_rating = "SELECT AVG(rating) AS avg_rating, COUNT(*) AS review_count FROM participation WHERE event_id = '$event_id' AND participation_status='Approved'";
                         $result_avg_rating = $connection->query($sql_avg_rating);
                         $row_avg_rating = $result_avg_rating->fetch_assoc();
                         $averageRating = $row_avg_rating['avg_rating'];
+                        $reviewCount = $row_avg_rating['review_count'];
 
                         echo "<div class='event-card'>";
                         echo "<div class='event-banner'>";
@@ -91,10 +112,18 @@ $sql = "SELECT * FROM events";
                         echo "<p class='event-date'>End Date: ".$row['event_enddate']."</p><br>";
                         echo "<p class='event-organizer'>Organizer: ".$row['event_organizers']."</p>";
 
+                        // Display the average rating as a number
+                        echo "<p class='average-rating'>Average Rating: ".number_format($averageRating, 1)."</p>";
+
+                        // Display the number of reviews
+                        echo "<p class='reviews'>Number of Reviews: ".$reviewCount."</p>";
+
                         // Display the 5-star rating
                         echo "<div class='star-rating' data-rating='".$averageRating."'>";
                         for ($i = 1; $i <= 5; $i++) {
-                            echo "<span class='star' data-rating='".$i."'>☆</span>";
+                            // Highlight stars based on the average rating
+                            $starClass = ($i <= $averageRating) ? 'star filled' : 'star';
+                            echo "<span class='".$starClass."' data-rating='".$i."'>★</span>";
                         }
                         echo "</div>";
 
@@ -118,7 +147,7 @@ $sql = "SELECT * FROM events";
     <script>
         // JavaScript code for handling star rating interactions
         const starContainers = document.querySelectorAll(".star-rating");
-        
+
         starContainers.forEach((starContainer) => {
             const stars = starContainer.querySelectorAll(".star");
             let currentRating = starContainer.getAttribute("data-rating");
@@ -142,14 +171,18 @@ $sql = "SELECT * FROM events";
             starContainer.addEventListener("mouseout", () => {
                 highlightStars(stars, currentRating);
             });
+
+            // Initial highlighting on page load
+            highlightStars(stars, currentRating);
         });
 
         function highlightStars(stars, rating) {
             stars.forEach((star) => {
-                if (star.getAttribute("data-rating") <= rating) {
-                    star.textContent = "★"; // Filled star
+                const starRating = parseInt(star.getAttribute("data-rating"));
+                if (starRating <= rating) {
+                    star.classList.add("filled");
                 } else {
-                    star.textContent = "☆"; // Empty star
+                    star.classList.remove("filled");
                 }
             });
         }

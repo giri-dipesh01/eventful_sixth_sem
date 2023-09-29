@@ -9,7 +9,6 @@ if (isset($_POST['submit']) && isset($_FILES['my_file'])) {
 
     // Get the file extension
     $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-
     // Allowed file extensions
     $allowed_extensions = array('png', 'jpeg', 'jpg');
 
@@ -125,8 +124,6 @@ if (isset($_POST['cardsubmit']) && isset($_FILES['card'])) {
     }
 }
 ?>
-
-
     <div class="dash-content">
         <div class="activity">
             <div class="title">
@@ -209,8 +206,7 @@ if (isset($_POST['cardsubmit']) && isset($_FILES['card'])) {
                     </div>
                     </form>
                     </div>
-            </div>
-            
+            </div>     
         </div>
     </div>  
 </section>

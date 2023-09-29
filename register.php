@@ -9,7 +9,7 @@ if(isset($_POST['register']))
     $batch=$_POST['batch'];
     $gender=$_POST['gender'];
     $regno=$_POST['regno'];
-    $semester=$_POST['semester'];
+    //$semester=$_POST['semester'];
     // md5 encryption for password
     $password=md5($_POST['password']);
     
@@ -29,8 +29,8 @@ if(isset($_POST['register']))
   {
    // Insert garne SQL Query
   
-  $sql="INSERT INTO students(email,password,full_name,gender,turegno, phone, batch, semester) 
-  VALUES ('$email','$password','$full_name','$gender','$regno','$phone','$batch','$semester')";
+  $sql="INSERT INTO students(email,password,full_name,gender,turegno, phone, batch) 
+  VALUES ('$email','$password','$full_name','$gender','$regno','$phone','$batch')";
     
     // query execution
     $result=$connection->query($sql);
@@ -152,20 +152,7 @@ if(isset($_POST['register']))
                 <option value="2079 BS">2079 BS</option>
                 <option value="2080 BS">2080 BS</option>
               </select>
-            </div>
-            <div class="select-box">
-              <select name="semester"  >
-                <option hidden>Semester</option>
-                <option value="First">First</option>
-                <option value="Second">Second</option>
-                <option value="Third">Third</option>
-                <option value="Fourth">Fourth</option>
-                <option value="Fifth">Fifth</option>
-                <option value="Sixth">Sixth</option>
-                <option value="Seventh">Seventh</option>
-                <option value="Eighth">Eighth</option>
-              </select>
-            </div>
+            </div>           
         </div>
         <div class="column">
           <div class="input-box">

@@ -1,18 +1,16 @@
 <?php
 include("studentsheader.php");
-
 // Establish a database connection
 $connection = new mysqli("localhost", "root", "", "eventful");
 if ($connection->connect_errno != 0) {
     die("Connection failed");
 }
-
 if (isset($_POST['participate'])) {
     $event_id = $_POST['event_id'];
     $rating = $_POST['rating'];
+    $comment = $_POST['comment'];
 
-    // Retrieve the student's email from the session (make sure it's stored correctly in the session)
-    session_start();
+    
     if (isset($_SESSION['students'])) {
         $row = $_SESSION['students'];
         $email = $row['email'];
@@ -31,7 +29,7 @@ if (isset($_POST['participate'])) {
 
         if ($result_check_review->num_rows > 0) {
             // The student has already reviewed this event
-            echo "You have already reviewed this event. Your Rating: $rating";
+            echo "<br><br><br>You have already reviewed this event. Your Rating: $rating"."<br>";
             
             // Fetch and display event details
             $sql_fetch_event = "SELECT * FROM events WHERE event_id = ?";
@@ -64,11 +62,11 @@ if (isset($_POST['participate'])) {
             }
         } else {
             // The student has not reviewed this event, so insert the review
-            $sql_insert_review = "INSERT INTO participation (event_id, student_email, rating) VALUES (?, ?, ?)";
+            $sql_insert_review = "INSERT INTO participation (event_id, student_email, rating,comment) VALUES (?, ?, ?,?)";
             $stmt_insert_review = $connection->prepare($sql_insert_review);
 
             if ($stmt_insert_review) {
-                $stmt_insert_review->bind_param('ssd', $event_id, $email, $rating);
+                $stmt_insert_review->bind_param('ssds', $event_id, $email, $rating,$comment);
 
                 if ($stmt_insert_review->execute()) {
                     echo "Review recorded successfully. Your Rating: $rating";
@@ -227,6 +225,7 @@ if (isset($_POST['participate'])) {
                 // Form for participating and rating
                 echo "<form action='participate.php' method='post'>";
                 echo "<input type='hidden' name='event_id' value='".$row['event_id']."'>";
+                echo"Comment <br><textarea name='comment' rows='4' cols='100'></textarea><br><br>";
                 echo "<label for='rating'>Rate the Event-  </label>";
                 echo "<input type='number' name='rating' min='1' max='5' required> <br>";
                 echo "<input type='submit' name='participate' value='Participate'> <br>";

@@ -77,9 +77,8 @@ include("studentsheader.php");
             <th style="width:1%">#</th>
             <th style="width:20%">Name</th>
             <th style="width:20%">Event Organizers</th>
-            <th style="width:20%">Event Category</th>
             <th style="width:20%">Event Date</th>
-            <th style="width:15%">Rated Date</th>
+            <th style="width:10%">Rated Date</th>
             <th style="width:5%">Rating</th>
             <th style="width:20%">Rating Status</th>
             <th>Action</th> 
@@ -103,7 +102,6 @@ include("studentsheader.php");
                             <td>".$i++."</td>
                             <td>".$row['event_name']."</td>
                             <td>".$row['event_organizers']."</td>
-                            <td>".$row['event_category']."</td>
                             <td>".$row['event_startdate'].' '.$row['event_enddate']."</td>
                             <td>".$row['rated_date']."</td>
                             <td>".$row['rating']."</td>
@@ -120,12 +118,11 @@ include("studentsheader.php");
             }
         ?>  
         <tr>
-        <th style="width:1%">#</th>
+            <th style="width:1%">#</th>
             <th style="width:20%">Name</th>
             <th style="width:20%">Event Organizers</th>
-            <th style="width:20%">Event Category</th>
             <th style="width:20%">Event Date</th>
-            <th style="width:15%">Rated Date</th>
+            <th style="width:10%">Rated Date</th>
             <th style="width:5%">Rating</th>
             <th style="width:20%">Rating Status</th>
             <th>Action</th> 
