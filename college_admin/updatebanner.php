@@ -45,7 +45,7 @@ if (isset($_POST['bannersubmit']) && isset($_FILES['banner'])) {
                 $sql = "UPDATE events SET event_banner='$target_banner' WHERE event_id='$banner_id'";
                 if ($connection->query($sql)) {
                     $success = "Banner updated successfully";
-                    header("Location: updateevents.php?bannersuccess=$success");
+                    header("Location: events.php");
                     exit;
                 } else {
                     $error_var = "Error updating event banner in the database";
