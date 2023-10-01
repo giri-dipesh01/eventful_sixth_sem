@@ -37,7 +37,7 @@ include("adminheader.php");
                     <i class="uil uil-clock-three"></i>
                     <span class="text">List of Students</span> 
                 </div>
-                <a href="allstudents.php">All Students</a> <br> <br>
+            </div>
     </div>
     <table border='1' width="100%">
         <tr>
@@ -46,6 +46,7 @@ include("adminheader.php");
             <th style="width:20%">Email</th>
             <th style="width:10%">Gender</th>
             <th style="width:10%">Phone No</th>
+            <th style="width:10%">TU Regno</th>
             <th style="width:10%">Batch</th>
             <th style="width:10%">Status</th>
             <th>Action</th> 
@@ -56,7 +57,7 @@ include("adminheader.php");
                 die("Connection failed");
             }
             
-            $sql = "SELECT * FROM `students`WHERE verification!='Verified' ORDER BY register_date DESC;";
+            $sql = "SELECT * FROM `students` ORDER BY register_date DESC;";
             $i = 1;
             if($result = $connection->query($sql))
             {
@@ -70,6 +71,7 @@ include("adminheader.php");
                             <td>".$row['email']."</td>
                             <td>".$row['gender']."</td>
                             <td>".$row['phone']."</td>
+                            <td>".$row['turegno']."</td>
                             <td>".$row['batch']."</td>
                             <td>".$row['verification']."</td>
                             <td>
@@ -89,10 +91,11 @@ include("adminheader.php");
             <th style="width:20%">Email</th>
             <th style="width:10%">Gender</th>
             <th style="width:10%">Phone No</th>
+            <th style="width:10%">TU Regno</th>
             <th style="width:10%">Batch</th>
             <th style="width:10%">Status</th>
             <th>Action</th> 
-        </tr>    
+        </tr>   
     </table>
 </section>
 <script src="script.js"></script>

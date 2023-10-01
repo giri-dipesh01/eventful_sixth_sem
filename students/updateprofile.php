@@ -125,6 +125,11 @@ if (isset($_POST['cardsubmit']) && isset($_FILES['card'])) {
 }
 ?>
     <div class="dash-content">
+    <div class="activity">
+            <div class="title">
+                <a href="updatepassword.php"><span class="text">Update Password</span> </a>
+            </div>
+        </div>
         <div class="activity">
             <div class="title">
                 <i class="uil uil-clock-three"></i>

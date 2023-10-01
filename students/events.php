@@ -145,7 +145,7 @@ $sql = "SELECT * FROM events";
 
     <script src="script.js"></script>
     <script>
-        // JavaScript code for handling star rating interactions
+    document.addEventListener("DOMContentLoaded", function () {
         const starContainers = document.querySelectorAll(".star-rating");
 
         starContainers.forEach((starContainer) => {
@@ -153,39 +153,12 @@ $sql = "SELECT * FROM events";
             let currentRating = starContainer.getAttribute("data-rating");
 
             stars.forEach((star) => {
-                star.addEventListener("mouseover", () => {
-                    const rating = star.getAttribute("data-rating");
-                    highlightStars(stars, rating);
-                });
-
-                star.addEventListener("mouseout", () => {
-                    highlightStars(stars, currentRating);
-                });
-
-                star.addEventListener("click", () => {
-                    currentRating = star.getAttribute("data-rating");
-                    starContainer.setAttribute("data-rating", currentRating);
-                });
-            });
-
-            starContainer.addEventListener("mouseout", () => {
-                highlightStars(stars, currentRating);
-            });
-
-            // Initial highlighting on page load
-            highlightStars(stars, currentRating);
-        });
-
-        function highlightStars(stars, rating) {
-            stars.forEach((star) => {
                 const starRating = parseInt(star.getAttribute("data-rating"));
-                if (starRating <= rating) {
-                    star.classList.add("filled");
-                } else {
-                    star.classList.remove("filled");
-                }
+                const starClass = (starRating <= currentRating) ? 'star filled' : 'star';
+                star.className = starClass;
             });
-        }
-    </script>
+        });
+    });
+</script>
 </body>
 </html>

@@ -23,7 +23,7 @@
 
   // email lai store gareko admin ko table bata
     $email=$row['email'];
-    $full_name=$row['full_name'];  
+    $full_name=$row['full_name'];   
 
   // logout ko main functionality
 

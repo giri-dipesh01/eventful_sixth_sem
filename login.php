@@ -18,7 +18,7 @@
 
         // comparision qeury using select
         //user ko table databse sanga
-        $sql="SELECT * FROM students WHERE email='$email' AND password='$password'";
+        $sql="SELECT * FROM students WHERE email='$email' AND password='$password' AND verification='Verified'";
         $result=$connection->query($sql);// query execution
         if($result->num_rows>0)// data match bako xa bane
         {
@@ -35,9 +35,15 @@
           header("Location:students/students.php");
           echo("<script> alert('Success');</script>"); 
         }
-        else // data match bako xaina bane
+        $checksql="SELECT * FROM students WHERE email='$email' AND password='$password' AND verification!='Verified'";
+        $r=$connection->query($checksql);// query execution
+        if($r->num_rows>0)// data match bako xaina bane
         {
-          echo("<script> alert(' Wrong Email Or Password ');</script>");
+          echo("<script> alert(' Please Contact Admin for Verification');</script>");
+          $errorMessage = "Please Contact Admin for Verification";
+        }
+        else{
+          $errorMessage = "Account doesn't Exist or Wrong Email or Password";
         }
     }
 ?>
@@ -66,13 +72,17 @@
       <form action="login.php" method="post" class="form" autocomplete="off">
         <div class="input-box">
           <label>Email Address</label>
-          <input type="email" placeholder="Enter email address" name="email" required />
+          <input type="email" placeholder="Enter email address" name="email" value="<?php if(isset($_POST['login'])){echo $email;}?>" required />
         </div>
         <div class="input-box">
           <label>Password</label>
           <input type="password" placeholder="Enter Your Password" name="password" required />
         </div>
         <button type="submit" name="login">Login</button>
+        <?php if (!empty($errorMessage)) {
+        echo '<div class="error-message">' . $errorMessage . '</div>';
+    }
+    ?>
       </form>
     </section>
   </body>
