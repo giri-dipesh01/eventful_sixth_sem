@@ -166,6 +166,10 @@
                     <i class="uil uil-favorite"></i>
                     <span class="link-name">Particapation & Reviews</span>
                 </a></li>
+                <li><a href="search.php">
+                    <i class="uil uil-search"></i>
+                    <span class="link-name">Search Events</span>
+                </a></li>
                 
                 </ul>
             <ul class="logout-mode">
