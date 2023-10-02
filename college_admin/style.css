@@ -145,7 +145,7 @@ body.dark li a:hover:before{
 .menu-items li a .link-name{
     font-size: 18px;
     font-weight: 400;
-    color: var(--black-light-color);    
+    color: #242526;    
     transition: var(--tran-05);
 }
 nav.close li a .link-name{
@@ -480,5 +480,9 @@ nav.close ~ .dashboard .top{
     .form button:hover 
     {
         background: rgb(216, 214, 224);
+    }
+    .passport
+    {
+        padding-right: 100px;
     }
 }
