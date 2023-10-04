@@ -162,7 +162,7 @@
                     <i class="uil uil-coffee"></i>
                     <span class="link-name"> All Events</span>
                 </a></li>
-                <li><a href="reviews.php">
+                <li><a href="readreviews.php">
                     <i class="uil uil-favorite"></i>
                     <span class="link-name">Particapation & Reviews</span>
                 </a></li>

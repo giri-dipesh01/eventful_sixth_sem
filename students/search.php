@@ -86,7 +86,7 @@ include("studentsheader.php");
     $result=$connection->query($query);
         if($result)
         {
-while ($row = $result->fetch_assoc()) {
+            while ($row = $result->fetch_assoc()) {
                         // Calculate the average rating
                         $event_id = $row['event_id'];
                         $ratings = array();// array initialization
@@ -98,11 +98,15 @@ while ($row = $result->fetch_assoc()) {
                             {
                                 $ratings[] = $ratingRow['rating']; // Store each rating in the array
                             }
-                            $memberCount = count($ratings);
-                            $windowSize = 3; // Adjust this value as needed
-                            $movingAverage = calculateMovingAverage($ratings, $windowSize);
-                            $averageRating = end($movingAverage); // Get the last element as the current moving average
-                            $reviewCount = count($ratings);
+                            if(!count($ratings)==0)
+                            {
+                                $reviewCount=count($ratings);
+                                $averageRating=array_sum($ratings)/count($ratings);
+                            }
+                            else{
+                                $reviewCount="0.0";
+                                $averageRating="0.0";
+                            }
                         }    
                         echo "<div class='event-card'>";
                         echo "<div class='event-banner'>";
@@ -170,17 +174,3 @@ while ($row = $result->fetch_assoc()) {
 </script>
 </body>
 </html>
-<?php
-function calculateMovingAverage($data, $windowSize)
-{
-    $movingAverage = array();
-
-    for ($i = 0; $i < count($data) - $windowSize + 1; $i++) {
-        $sum = array_sum(array_slice($data, $i, $windowSize));
-        $average = $sum / $windowSize;
-        $movingAverage[] = $average;
-    }
-
-    return $movingAverage;
-}
-?>

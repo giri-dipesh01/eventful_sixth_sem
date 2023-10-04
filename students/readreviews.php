@@ -107,9 +107,9 @@ include("studentsheader.php");
                             <td>".$row['rating']."</td>
                             <td>".$row['participation_status']."</td>
                             <td>
-                                <form action='readreviews.php' method='post'>
-                                    <input type='hidden' value='".$row['participation_id']."' name='review_update'>
-                                    <input type='submit' value='View' name='update'>
+                                <form action='participate.php' method='post'>
+                                    <input type='hidden' value='".$row['event_id']."' name='event_id'>
+                                    <input type='submit' value='View' name='interest'>
                                 </form>  
                             </td>           
                         </tr>

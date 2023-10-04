@@ -26,11 +26,17 @@ if ($result = $connection->query($sql)) {
     echo "Number of Members: $memberCount<br>";
 
     // Calculate the moving average
-    $windowSize =$memberCount; // Adjust this value as needed
+    if($memberCount==0)
+    {
+        $windowSize=1;
+    }else{
+    $windowSize =3;} // Adjust this value as needed
+    $avg_rating=array_sum($ratings)/count($ratings);
     $movingAverage = calculateMovingAverage($ratings, $windowSize);
 
     // Display the moving average
     echo "Moving Average: " . implode(', ', $movingAverage);
+    echo $avg_rating;
 }
 
 // Close the database connection

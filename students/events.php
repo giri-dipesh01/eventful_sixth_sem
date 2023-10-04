@@ -100,11 +100,17 @@ $sql = "SELECT * FROM events";
                             {
                                 $ratings[] = $ratingRow['rating']; // Store each rating in the array
                             }
-                            $memberCount = count($ratings);
-                            $windowSize = 3; // Adjust this value as needed
-                            $movingAverage = calculateMovingAverage($ratings, $windowSize);
-                            $averageRating = end($movingAverage); // Get the last element as the current moving average
-                            $reviewCount = count($ratings);
+                            if(!count($ratings)==0)
+                            {
+                                $reviewCount=count($ratings);
+                                $averageRating=array_sum($ratings)/count($ratings);
+                            }
+                            else{
+                                $reviewCount="0.0";
+                                $averageRating="0.0";
+                            }
+                            
+                            
                         }    
                         echo "<div class='event-card'>";
                         echo "<div class='event-banner'>";

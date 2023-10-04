@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ratings Over Time Chart</title>
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Create a canvas element for the chart -->
+    <canvas id="ratingsChart" width="600" height="400"></canvas>
+
+    <script>
+        // Sample data
+        const ratings = [1, 2, 3, 4, 5];
+        const windowSize = 3;
+
+        // Function to calculate the moving average
+        function calculateMovingAverage(data, windowSize) {
+            const movingAverage = [];
+
+            for (let i = 0; i < data.length - windowSize + 1; i++) {
+                const sum = data.slice(i, i + windowSize).reduce((acc, val) => acc + val, 0);
+                const average = sum / windowSize;
+                movingAverage.push(average);
+            }
+
+            return movingAverage;
+        }
+
+        // Calculate the moving average
+        const movingAverage = calculateMovingAverage(ratings, windowSize);
+
+        // Get the canvas element
+        const ctx = document.getElementById('ratingsChart').getContext('2d');
+
+        // Create the chart
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: ratings.length - windowSize + 1 }, (_, i) => `Window ${i + 1}`),
+                datasets: [{
+                    label: 'Moving Average',
+                    data: movingAverage,
+                    borderColor: 'blue',
+                    borderWidth: 2,
+                    fill: false,
+                }, {
+                    label: 'Individual Ratings',
+                    data: ratings,
+                    borderColor: 'gray',
+                    borderWidth: 1,
+                    pointRadius: 5,
+                    pointBackgroundColor: 'red',
+                    fill: false,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5,
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

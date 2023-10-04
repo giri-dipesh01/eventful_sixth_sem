@@ -5,12 +5,12 @@ $connection = new mysqli("localhost", "root", "", "eventful");
 if ($connection->connect_errno != 0) {
     die("Connection failed");
 }
+
 if (isset($_POST['participate'])) {
     $event_id = $_POST['event_id'];
     $rating = $_POST['rating'];
     $comment = $_POST['comment'];
 
-    
     if (isset($_SESSION['students'])) {
         $row = $_SESSION['students'];
         $email = $row['email'];
@@ -29,94 +29,33 @@ if (isset($_POST['participate'])) {
 
         if ($result_check_review->num_rows > 0) {
             // The student has already reviewed this event
-            echo "<br><br><br>You have already reviewed this event. Your Rating: $rating"."<br>";
-            
-            // Fetch and display event details
-            $sql_fetch_event = "SELECT * FROM events WHERE event_id = ?";
-            $stmt_fetch_event = $connection->prepare($sql_fetch_event);
-
-            if ($stmt_fetch_event) {
-                $stmt_fetch_event->bind_param('s', $event_id);
-                $stmt_fetch_event->execute();
-                $result_fetch_event = $stmt_fetch_event->get_result();
-
-                if ($result_fetch_event->num_rows > 0) {
-                    while ($event_row = $result_fetch_event->fetch_assoc()) {
-                        // Display event details
-                        echo "<div class='event-details'>";
-                        echo "<h2 class='event-title'>".$event_row['event_name']."</h2>";
-                        echo "<p class='event-description'>".$event_row['event_description']."</p>";
-                        echo "<p class='event-organizer'>Organizer: ".$event_row['event_organizers']."</p>";
-                        echo "<p class='event-date'>Start Date: ".$event_row['event_startdate']."</p>";
-                        echo "<p class='event-date'>End Date: ".$event_row['event_enddate']."</p>";
-                        echo "<p class='event-category'>Category: ".$event_row['event_category']."</p>";
-                        echo "</div>"; // event-details
-                    }
-                } else {
-                    echo "Event details not found.";
-                }
-
-                $stmt_fetch_event->close();
-            } else {
-                echo "Error preparing statement for fetching event details: " . $connection->error;
-            }
+            echo "<script>alert('You have already reviewed this event.');</script>";
         } else {
             // The student has not reviewed this event, so insert the review
-            $sql_insert_review = "INSERT INTO participation (event_id, student_email, rating,comment) VALUES (?, ?, ?,?)";
+            $sql_insert_review = "INSERT INTO participation (event_id, student_email, rating, comment) VALUES (?, ?, ?, ?)";
             $stmt_insert_review = $connection->prepare($sql_insert_review);
 
             if ($stmt_insert_review) {
-                $stmt_insert_review->bind_param('ssds', $event_id, $email, $rating,$comment);
+                $stmt_insert_review->bind_param('ssds', $event_id, $email, $rating, $comment);
 
                 if ($stmt_insert_review->execute()) {
-                    echo "Review recorded successfully. Your Rating: $rating";
-                    
-                    // Fetch and display event details
-                    $sql_fetch_event = "SELECT * FROM events WHERE event_id = ?";
-                    $stmt_fetch_event = $connection->prepare($sql_fetch_event);
-
-                    if ($stmt_fetch_event) {
-                        $stmt_fetch_event->bind_param('s', $event_id);
-                        $stmt_fetch_event->execute();
-                        $result_fetch_event = $stmt_fetch_event->get_result();
-
-                        if ($result_fetch_event->num_rows > 0) {
-                            while ($event_row = $result_fetch_event->fetch_assoc()) {
-                                // Display event details
-                                echo "<div class='event-details'>";
-                                echo "<h2 class='event-title'>".$event_row['event_name']."</h2>";
-                                echo "<p class='event-description'>".$event_row['event_description']."</p>";
-                                echo "<p class='event-organizer'>Organizer: ".$event_row['event_organizers']."</p>";
-                                echo "<p class='event-date'>Start Date: ".$event_row['event_startdate']."</p>";
-                                echo "<p class='event-date'>End Date: ".$event_row['event_enddate']."</p>";
-                                echo "<p class='event-category'>Category: ".$event_row['event_category']."</p>";
-                                echo "</div>"; // event-details
-                            }
-                        } else {
-                            echo "Event details not found.";
-                        }
-
-                        $stmt_fetch_event->close();
-                    } else {
-                        echo "Error preparing statement for fetching event details: " . $connection->error;
-                    }
+                    echo "<script>alert('Review recorded successfully. Your Rating: $rating' Please Wait for Admin. Thank you for your reponse);</script>";
                 } else {
-                    echo "Error recording review: " . $stmt_insert_review->error;
+                    echo "<script>alert('Error recording review: " . $stmt_insert_review->error . "');</script>";
                 }
 
                 $stmt_insert_review->close();
             } else {
-                echo "Error preparing statement for review: " . $connection->error;
+                echo "<script>alert('Error preparing statement for review: " . $connection->error . "');</script>";
             }
         }
 
         $stmt_check_review->close();
     } else {
-        echo "Error preparing statement for review check: " . $connection->error;
+        echo "<script>alert('Error preparing statement for review check: " . $connection->error . "');</script>";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -198,10 +137,9 @@ if (isset($_POST['participate'])) {
         </div>
         
         <!-- Event Information -->
-<div class="event-container">
+        <div class="event-container">
     <?php
-    if (isset($_POST['interest'])) 
-    {
+    if (isset($_POST['interest'])) {
         $event_id = $_POST['event_id'];
         $sql = "SELECT * FROM events WHERE event_id='$event_id'";
         if ($result = $connection->query($sql)) {
@@ -221,24 +159,41 @@ if (isset($_POST['participate'])) {
                 echo "<p class='event-date'>Start Date: ".$row['event_startdate']."</p>";
                 echo "<p class='event-date'>End Date: ".$row['event_enddate']."</p>";
                 echo "<p class='event-category'>Category: ".$row['event_category']."</p>";
+                // Check if today's date is before the event's end date
+                $event_end_date = strtotime($row['event_enddate']);
+                $today_date = strtotime(date('Y-m-d'));
 
-                // Form for participating and rating
-                echo "<form action='participate.php' method='post'>";
-                echo "<input type='hidden' name='event_id' value='".$row['event_id']."'>";
-                echo"Comment <br><textarea name='comment' rows='4' cols='100'></textarea><br><br>";
-                echo "<label for='rating'>Rate the Event-  </label>";
-                echo "<input type='number' name='rating' min='1' max='5' required> <br>";
-                echo "<input type='submit' name='participate' value='Participate'> <br>";
-                echo "</form>";
+                if ($today_date > $event_end_date) {
+                    // Today's date is before the event's end date, allow rating
+                    echo "<form action='participate.php' method='post'>";
+                    echo "<input type='hidden' name='event_id' value='".$row['event_id']."'>";
+                    echo "Comment <br><textarea name='comment' rows='4' cols='100'></textarea><br><br>";
+                    echo "<label for='rating'>Rate the Event-  </label>";
+                    echo "<select name='rating' required>
+                    <option value='5'>Very Satisfied</option>
+                    <option value='4'>Satisfied</option>
+                    <option value='3'>Neither Satisfied nor Unsatisfied</option>
+                    <option value='2'>Unsatisfied</option>
+                    <option value='1'>Very Unsatisfied</option>
+                </select><br><br>";
+                    echo "<input type='submit' name='participate' value='Submit'> <br>";
+                    echo "</form>";
+                } else {
+                    // Event has ended, display a message
+                    echo "<p>Please wait until the event is finished for reviewing the event.</p>";
+                }
+
+                
 
                 echo "</div>"; // event-details
                 echo "</div>"; // event-card
             }
         }
+    } else {
+        echo "More Events?? <a href='events.php'> Click here</a>";
     }
     ?>
-</div>
-        
+</div>  
     </div>
     </section>
     <script src="script.js"></script>

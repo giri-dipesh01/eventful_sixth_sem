@@ -130,7 +130,7 @@ include("adminheader.php");
                     <select name="status" >
                         <option hidden>Update Status</option>
                         <option value="Approved">Approved</option>
-                        <option value="Verified">Verified</option>
+                        <option value="Rejected">Rejected</option>
                     </select>
                 </div>
             </div> <br> <br>

@@ -206,11 +206,11 @@ if (isset($_POST['update_event'])) {
                 <br> <br>
                 
                 <label for="usd">Event Start Date:- 
-    <input type="date" name="usd" id="usd" size="100" min="<?php echo date("Y-m-d");?>" value="<?php echo $row['event_startdate']?>" required>
+    <input type="date" name="usd" id="usd" size="100" min="<?php echo $row['event_startdate']?>"max="<?php echo date("Y-m-d");?>" value="<?php echo $row['event_startdate']?>" required>
 </label>
 <br> <br>
 <label for="ued">Event End Date:- 
-    <input type="date" name="ued" id="ued" size="100" min="<?php echo date("Y-m-d");?>" value="<?php echo $row['event_enddate']?>" required>
+    <input type="date" name="ued" id="ued" size="100" min="<?php echo $row['event_enddate']?>"max="<?php echo date("Y-m-d");?>" value="<?php echo $row['event_enddate']?>" required>
     <span id="date-error" style="color: red;"></span>
 </label>
 <br> <br>
