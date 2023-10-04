@@ -11,7 +11,7 @@
   session_start(); 
 
   // session check gareko with $_SESSION variable
-  if(!isset($_SESSION['adminlist'])) 
+  if(!isset($_SESSION['admin'])) 
   {
     // yedi session xaina bane login ma patidine
     header("Location:index.php"); 
@@ -19,10 +19,10 @@
 
   // yedi session xa bane
   // afno table ko nam, mero students thiyo
-  $row=$_SESSION['adminlist']; 
+  $row=$_SESSION['admin']; 
 
   // email lai store gareko admin ko table bata
-  $email=$row['email']; 
+  $email=$row['admin_email']; 
 
   // logout ko main functionality
 
@@ -134,7 +134,7 @@
                     <i class="uil uil-coffee"></i>
                     <span class="link-name">Events</span>
                 </a></li>
-                <li><a href="#">
+                <li><a href="readreviews.php">
                     <i class="uil uil-favorite"></i>
                     <span class="link-name">Reviews</span>
                 </a></li>
@@ -142,7 +142,6 @@
             <ul class="logout-mode">
                 <li>
                   <form action="admin.php" method="POST">
-                    
                     <button type="submit" name="logout"><i class="uil uil-signout"></i></button>
                   </form>
                 </li>  

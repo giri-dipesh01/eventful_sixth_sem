@@ -86,59 +86,71 @@ include("studentsheader.php");
     $result=$connection->query($query);
         if($result)
         {
-            while ($row = $result->fetch_assoc()) 
-            {
-            // Calculate the average rating
-            $event_id = $row['event_id'];
-            $sql_avg_rating = "SELECT AVG(rating) AS avg_rating, COUNT(*) AS review_count FROM participation WHERE event_id = '$event_id' AND participation_status='Approved'";
-            $result_avg_rating = $connection->query($sql_avg_rating);
-            $row_avg_rating = $result_avg_rating->fetch_assoc();
-            $averageRating = $row_avg_rating['avg_rating'];
-            $reviewCount = $row_avg_rating['review_count'];
+while ($row = $result->fetch_assoc()) {
+                        // Calculate the average rating
+                        $event_id = $row['event_id'];
+                        $ratings = array();// array initialization
+                        $ratingquery = "SELECT rating from participation WHERE event_id = '$event_id' AND participation_status='Approved'";
+                        $ratingdata = $connection->query($ratingquery);
+                        if($ratingdata)
+                        {
+                            while ($ratingRow = $ratingdata->fetch_assoc()) 
+                            {
+                                $ratings[] = $ratingRow['rating']; // Store each rating in the array
+                            }
+                            $memberCount = count($ratings);
+                            $windowSize = 3; // Adjust this value as needed
+                            $movingAverage = calculateMovingAverage($ratings, $windowSize);
+                            $averageRating = end($movingAverage); // Get the last element as the current moving average
+                            $reviewCount = count($ratings);
+                        }    
+                        echo "<div class='event-card'>";
+                        echo "<div class='event-banner'>";
+                        if ($row['event_banner'] != '') {
+                            echo "<img src='".$row['event_banner']."' alt='Event Banner'>";
+                        } else {
+                            echo "<img src='../banners/default.png' alt='Default Banner'>";
+                        }
+                        echo "</div>";
+                        echo "<div class='event-details'>";
+                        echo "<h2 class='event-title'>".$row['event_name']."</h2>";
+                        echo "<p class='event-description'>".$row['event_description']."</p> <br>";
+                        echo "<p class='event-date'>Start Date: ".$row['event_startdate']."</p><br>";
+                        echo "<p class='event-date'>End Date: ".$row['event_enddate']."</p><br>";
+                        echo "<p class='event-organizer'>Organizer: ".$row['event_organizers']."</p>";
 
-            echo "<div class='event-card'>";
-            echo "<div class='event-banner'>";
-            if ($row['event_banner'] != '') {
-                echo "<img src='".$row['event_banner']."' alt='Event Banner'>";
-            } else {
-                echo "<img src='../banners/default.png' alt='Default Banner'>";
+                        // Display the average rating as a number
+                        echo "<p class='average-rating'>Average Rating: ".number_format($averageRating, 1)."</p>";
+
+                        // Display the number of reviews
+                        echo "<p class='reviews'>Number of Reviews: ".$reviewCount."</p>";
+
+                        // Display the 5-star rating
+                        echo "<div class='star-rating' data-rating='".$averageRating."'>";
+                        for ($i = 1; $i <= 5; $i++) {
+                            // Highlight stars based on the average rating
+                            $starClass = ($i <= $averageRating) ? 'star filled' : 'star';
+                            echo "<span class='".$starClass."' data-rating='".$i."'>★</span>";
+                        }
+                        echo "</div>";
+
+                        // Add the form for viewing event details
+                        echo "<form action='participate.php' method='post'> <br>";
+                        echo "<input type='hidden' value='".$email."' name='student_id'>";
+                        echo "<input type='hidden' value='".$row['event_id']."' name='event_id'>";
+                        echo "<input type='submit' value='View' name='interest'>";
+                        echo "</form>";
+                        echo "</div>";
+                        echo "</div>";
+                    }
+                }
             }
-            echo "</div>";
-            echo "<div class='event-details'>";
-            echo "<h2 class='event-title'>".$row['event_name']."</h2>";
-            echo "<p class='event-description'>".$row['event_description']."</p> <br>";
-            echo "<p class='event-date'>Start Date: ".$row['event_startdate']."</p><br>";
-            echo "<p class='event-date'>End Date: ".$row['event_enddate']."</p><br>";
-            echo "<p class='event-organizer'>Organizer: ".$row['event_organizers']."</p>";
-
-            // Display the average rating as a number
-            echo "<p class='average-rating'>Average Rating: ".number_format($averageRating, 1)."</p>";
-
-            // Display the number of reviews
-            echo "<p class='reviews'>Number of Reviews: ".$reviewCount."</p>";
-
-            // Display the 5-star rating
-            echo "<div class='star-rating' data-rating='".$averageRating."'>";
-            for ($i = 1; $i <= 5; $i++) {
-                // Highlight stars based on the average rating
-                $starClass = ($i <= $averageRating) ? 'star filled' : 'star';
-                echo "<span class='".$starClass."' data-rating='".$i."'>★</span>";
-            }
-            echo "</div>";
-
-            // Add the form for viewing event details
-            echo "<form action='participate.php' method='post'> <br>";
-            echo "<input type='hidden' value='".$email."' name='student_id'>";
-            echo "<input type='hidden' value='".$row['event_id']."' name='event_id'>";
-            echo "<input type='submit' value='View' name='interest'>";
-            echo "</form>";
-            echo "</div>";
-            echo "</div>";
-            }
-        }
-    }
-    ?>
+                ?>
+            </div>
+        </div>
+    </div>
     </section>
+
     <script src="script.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -155,6 +167,20 @@ include("studentsheader.php");
             });
         });
     });
-    </script>
+</script>
 </body>
 </html>
+<?php
+function calculateMovingAverage($data, $windowSize)
+{
+    $movingAverage = array();
+
+    for ($i = 0; $i < count($data) - $windowSize + 1; $i++) {
+        $sum = array_sum(array_slice($data, $i, $windowSize));
+        $average = $sum / $windowSize;
+        $movingAverage[] = $average;
+    }
+
+    return $movingAverage;
+}
+?>

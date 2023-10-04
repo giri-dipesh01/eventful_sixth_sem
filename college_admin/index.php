@@ -8,7 +8,7 @@
         //echo ($email." and ".$password."<br>");// display of variable
 
         // Connection ko variable
-        $connection= new mysqli("localhost","root","","admin");
+        $connection= new mysqli("localhost","root","","eventful");
         // Checking Database Connection
         if($connection->connect_errno!=0)
         // 0 means connected 
@@ -18,7 +18,7 @@
 
         // comparision qeury using select
         //user ko table databse sanga
-        $sql="SELECT * FROM adminlist WHERE email='$email' AND password='$password'";
+        $sql="SELECT * FROM admin WHERE admin_email='$email' AND admin_password='$password'";
         $result=$connection->query($sql);// query execution
         if($result->num_rows>0)// data match bako xa bane
         {
@@ -29,7 +29,7 @@
          $row=$result->fetch_assoc();
 
            // tes lai $_Session ma store gareko
-         $_SESSION['adminlist']=$row;
+         $_SESSION['admin']=$row;
 
           // redirecting to  user dashboard page after login is successful with session
           header("Location:admin.php");
@@ -37,7 +37,7 @@
         }
         else // data match bako xaina bane
         {
-          echo("<script> alert(' Wrong Email Or Password ');</script>");
+          echo("<script> alert('$email $password Wrong Email Or Password ');</script>");
         }
     }
 ?>

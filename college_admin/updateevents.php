@@ -1,5 +1,6 @@
 <?php
-include("adminheader.php"); 
+include("adminheader.php");
+
 if (isset($_POST['update_event'])) {
     $un = $_POST["un"];
     $ud = $_POST["ud"];
@@ -9,26 +10,38 @@ if (isset($_POST['update_event'])) {
     $uc = $_POST["uc"];
     $update_id = $_POST["update_id"];
 
-    // Update the event details in the database
+    // Use prepared statements to prevent SQL injection
     $sql = "UPDATE events SET 
-        event_name='$un',
-        event_description='$ud',
-        event_organizers='$uo',
-        event_startdate='$usd',
-        event_enddate='$ued',
-        event_category='$uc'
-        WHERE event_id='$update_id'";
+        event_name=?, 
+        event_description=?, 
+        event_organizers=?, 
+        event_startdate=?, 
+        event_enddate=?, 
+        event_category=? 
+        WHERE event_id=?";
 
-    if ($connection->query($sql)) {
-        header("Location: events.php");
-        exit;
+    if ($stmt = $connection->prepare($sql)) {
+        // Bind parameters
+        $stmt->bind_param("ssssssi", $un, $ud, $uo, $usd, $ued, $uc, $update_id);
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            $stmt->close();
+            header("Location: events.php");
+            exit;
+        } else {
+            $error_var = "Error updating event details in the database";
+            header("Location: updateevents.php?error=$error_var");
+            exit;
+        }
     } else {
-        $error_var = "Error updating event details in the database";
-        header("Location: updateevents.php?error=$error_var");
-        exit;
+        echo "Error preparing statement: " . $connection->error;
     }
 }
 ?>
+
+<!-- Rest of your HTML and CSS code remains unchanged -->
+
 <style>
     fieldset {
         border: 1px solid #ccc;
@@ -153,7 +166,7 @@ if (isset($_POST['update_event'])) {
     {
     ?>
     
-    <form action="updateevents.php" method="POST">
+    <form action="updateevents.php" method="POST" onsubmit="return validateEndDate()">
                         <?php
                  $conn= new mysqli("localhost","root","","eventful");
                 if($conn->connect_errno!=0)
@@ -183,46 +196,24 @@ if (isset($_POST['update_event'])) {
                 <br> <br>
                 <label for="uo">Event Organizer:- 
     <select name="uo" id="uo" required>
-        <?php
-        $connection = new mysqli("localhost", "root", "", "eventful");
-        if ($connection->connect_errno != 0) {
-            die("Connection Error!");
-        }
-        $sql = "SELECT * FROM categories WHERE type='organizer'";
-        $categories = $connection->query($sql);
-        foreach ($categories as $category) {
-            $selected = ($category['category_name'] == $row['event_organizers']) ? 'selected' : '';
-            echo("<option value='" . $category['category_name'] . "' $selected>" . $category['category_name'] . "</option>");
-        }
-        ?>
-    </select>
+        <option value='Danfe Student Council' >Danfe Student Council</option><option value='Danfe Sports Club' selected>Danfe Sports Club</option><option value='Danfe Developers Club' >Danfe Developers Club</option><option value='Danfe Media & Entertainment Club' >Danfe Media & Entertainment Club</option><option value='Danfe IOT & Robotics Club' >Danfe IOT & Robotics Club</option><option value='Danfe Designers Club' >Danfe Designers Club</option>    </select>
 </label>
                 <br> <br>
                 <label for="uc">Event Category:- 
     <select name="uc" id="uc">
-        <?php
-        $connection = new mysqli("localhost", "root", "", "eventful");
-        if ($connection->connect_errno != 0) {
-            die("Connection Error!");
-        }
-        $sql = "SELECT * FROM categories WHERE type='event'";
-        $categories = $connection->query($sql);
-        foreach ($categories as $category) {
-            $selected = ($category['category_name'] == $row['event_category']) ? 'selected' : '';
-            echo("<option value='" . $category['category_name'] . "' $selected>" . $category['category_name'] . "</option>");
-        }
-        ?>
-    </select>
+        <option value='Sports' >Sports</option><option value='Internet of Things' selected>Internet of Things</option><option value='Hackathon' >Hackathon</option><option value='Music & Culutral Events' >Music & Culutral Events</option><option value='Education Fair' >Education Fair</option><option value='Art & Design' >Art & Design</option><option value='Others' >Others</option><option value='Programming' >Programming</option>    </select>
 </label>
                 <br> <br>
+                
                 <label for="usd">Event Start Date:- 
-                <input type="date" name="usd" id="usd" size="100" min="<?php echo date("Y-m-d");?>" value="<?php echo $row['event_startdate']?>" >
-                </label>
-                <br> <br>
-                <label for="ued">Event End Date:- 
-                <input type="date" name="ued" id="ued" size="100" min="<?php echo date("Y-m-d");?>"  value="<?php echo $row['event_enddate']?>">
-                </label>
-                <br> <br>
+    <input type="date" name="usd" id="usd" size="100" min="<?php echo date("Y-m-d");?>" value="<?php echo $row['event_startdate']?>" required>
+</label>
+<br> <br>
+<label for="ued">Event End Date:- 
+    <input type="date" name="ued" id="ued" size="100" min="<?php echo date("Y-m-d");?>" value="<?php echo $row['event_enddate']?>" required>
+    <span id="date-error" style="color: red;"></span>
+</label>
+<br> <br>
                 <input type="submit" name="update_event" id="update_event" >
                 <input type='hidden' name='update_id' id='update_id' value="<?php echo $row['event_id'];?>">
         
@@ -243,6 +234,24 @@ if (isset($_POST['update_event'])) {
         </div>
     </div>
 </section>
+<script>
+    function validateEndDate() {
+        var startDate = new Date(document.getElementById("usd").value);
+        var endDate = new Date(document.getElementById("ued").value);
+        var dateError = document.getElementById("date-error");
+
+        if (endDate < startDate) {
+            dateError.textContent = "End date must be equal to or later than the start date.";
+            return false;
+        } else {
+            dateError.textContent = "";
+            return true;
+        }
+    }
+
+    // Attach the validateEndDate function to the oninput event of the end date input
+    document.getElementById("ued").oninput = validateEndDate;
+</script>
 <script src="script.js"></script>
 </body>
 </html>

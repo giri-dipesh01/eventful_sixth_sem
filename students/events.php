@@ -91,12 +91,21 @@ $sql = "SELECT * FROM events";
                     while ($row = $result->fetch_assoc()) {
                         // Calculate the average rating
                         $event_id = $row['event_id'];
-                        $sql_avg_rating = "SELECT AVG(rating) AS avg_rating, COUNT(*) AS review_count FROM participation WHERE event_id = '$event_id' AND participation_status='Approved'";
-                        $result_avg_rating = $connection->query($sql_avg_rating);
-                        $row_avg_rating = $result_avg_rating->fetch_assoc();
-                        $averageRating = $row_avg_rating['avg_rating'];
-                        $reviewCount = $row_avg_rating['review_count'];
-
+                        $ratings = array();// array initialization
+                        $ratingquery = "SELECT rating from participation WHERE event_id = '$event_id' AND participation_status='Approved'";
+                        $ratingdata = $connection->query($ratingquery);
+                        if($ratingdata)
+                        {
+                            while ($ratingRow = $ratingdata->fetch_assoc()) 
+                            {
+                                $ratings[] = $ratingRow['rating']; // Store each rating in the array
+                            }
+                            $memberCount = count($ratings);
+                            $windowSize = 3; // Adjust this value as needed
+                            $movingAverage = calculateMovingAverage($ratings, $windowSize);
+                            $averageRating = end($movingAverage); // Get the last element as the current moving average
+                            $reviewCount = count($ratings);
+                        }    
                         echo "<div class='event-card'>";
                         echo "<div class='event-banner'>";
                         if ($row['event_banner'] != '') {
@@ -162,3 +171,17 @@ $sql = "SELECT * FROM events";
 </script>
 </body>
 </html>
+<?php
+function calculateMovingAverage($data, $windowSize)
+{
+    $movingAverage = array();
+
+    for ($i = 0; $i < count($data) - $windowSize + 1; $i++) {
+        $sum = array_sum(array_slice($data, $i, $windowSize));
+        $average = $sum / $windowSize;
+        $movingAverage[] = $average;
+    }
+
+    return $movingAverage;
+}
+?>

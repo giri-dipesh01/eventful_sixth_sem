@@ -118,66 +118,62 @@ if (isset($_POST["event_entry"])) {
             
             <legend> Insert Event</legend>
             
-                <form action="insertevents.php" method="post">
+                <form action="insertevents.php" method="post" onsubmit="return validateForm()">
                 <label for="event_name">Event Name:- 
                     <input type="text" name="event_name" id="event_name" size="100" required>
                 </label>
                 <br> <br>
-                <label for="event_category">Event Category:- 
-    <select name="event_category" id="event_category" required>
-        <?php
-        $connection = new mysqli("localhost", "root", "", "eventful");
-        if ($connection->connect_errno != 0) {
-            die("Connection Error!");
-        }
-        $sql = "SELECT * FROM categories WHERE type='event'";
-        $categories = $connection->query($sql);
-        if ($categories) {
-            foreach ($categories as $category) {
-                echo "<option value='" . $category['category_name'] . "'>" . $category['category_name'] . "</option>";
-            }
-        } else {
-            echo "No categories found.";
-        }
-        ?>
-    </select>
-</label>
+               
                 <br> <br>
                 <label for="event_description">Event Description:- 
                     <textarea name="event_description" id="event_description" cols="100" rows="5" required>
                     </textarea>
-                </label>
+                </label> <br> <br>
+                 <label for="event_category">Event Category:- 
+    <select name="event_category" id="event_category" required>
+        <option value='Sports'>Sports</option><option value='Internet of Things'>Internet of Things</option><option value='Hackathon'>Hackathon</option><option value='Music & Culutral Events'>Music & Culutral Events</option><option value='Education Fair'>Education Fair</option><option value='Art & Design'>Art & Design</option><option value='Others'>Others</option><option value='Programming'>Programming</option>    </select>
+</label>
                 <br> <br>
                 <label for="event_organizers">Event Organizer:- 
                 <select name="event_organizers" id="event_organizers" required>
-                <?php
-                $connection = new mysqli("localhost", "root", "", "eventful");
-                if ($connection->connect_errno != 0) {
-            die("Connection Error!");
-                }
-                $sql = "SELECT * FROM categories WHERE type='organizer'";
-                $categories = $connection->query($sql);
-                foreach ($categories as $category) {
-                echo ("<option value='" . $category['category_name'] . "'>" . $category['category_name'] . "</option>");
-                }
-                ?>
-                </select>
+                <option value='Danfe Student Council'>Danfe Student Council</option><option value='Danfe Sports Club'>Danfe Sports Club</option><option value='Danfe Developers Club'>Danfe Developers Club</option><option value='Danfe Media & Entertainment Club'>Danfe Media & Entertainment Club</option><option value='Danfe IOT & Robotics Club'>Danfe IOT & Robotics Club</option><option value='Danfe Designers Club'>Danfe Designers Club</option>                </select>
                 </label>
                 <br> <br>
                 <label for="event_startdate">Event Start Date:- 
                     <input type="date" name="event_startdate" id="event_startdate" size="100" min="<?php echo date("Y-m-d"); ?>" required>
                 </label>
                 <br> <br>
-                <label for="event_enddate">Event End Date:- 
-                    <input type="date" name="event_enddate" id="event_enddate" size="100" min="<?php echo date("Y-m-d"); ?>" required>
-                </label>
-                <br> <br>
-                <input type="submit" name="event_entry" id="event_entry" >
+                <label for="event_enddate">Event End Date: 
+                        <input type="date" name="event_enddate" id="event_enddate" size="100" min="<?php echo date("Y-m-d"); ?>" required>
+                        <span id="date-error" style="color: red;"></span>
+                    </label>
+                    <br> <br>
+
+                    <input type="submit" name="event_entry" id="event_entry">
                 </form>
             </fieldset>
         </div>
     </div>
 </section>
+<script>
+    function validateEndDate() {
+        var startDate = new Date(document.getElementById("event_startdate").value);
+        var endDate = new Date(document.getElementById("event_enddate").value);
+        var dateError = document.getElementById("date-error");
+
+        if (endDate <= startDate) {
+            dateError.textContent = "End date must be greater than the start date.";
+            return false;
+        } else {
+            dateError.textContent = "";
+            return true;
+        }
+    }
+
+    function validateForm() {
+        return validateEndDate();
+    }
+</script>
 <script src="script.js"></script>
 </body>
 </html>
