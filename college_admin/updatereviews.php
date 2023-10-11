@@ -111,6 +111,16 @@ include("adminheader.php");
             <td>Given Rating</td>
             <td><?php echo($row['rating'])?></td>
             </tr> 
+            </tr> 
+            <td>6</td>        
+            <td>Comment</td>
+            <td><?php if(($row['comment'])!=' '){
+                echo(" No Comment was added by Student");}
+                else{
+                    echo($row['comment']);
+                }
+                ?></td>
+            </tr> 
             <td>7</td>    
             <td>Rated Date</td>
             <td><?php echo($row['rated_date'])?></td>
@@ -123,7 +133,11 @@ include("adminheader.php");
             </tr>
     </table>
             <div class="input-box address">
-            <form action="updatereviews.php" method="post">
+                <?php
+                if(($row['participation_status'])!='Approved')
+                {
+                ?>
+                 <form action="updatereviews.php" method="post">
             <label>Update Student Status</label> <br> <br>
             <div class="column">
                 <div class="select-box">
@@ -136,7 +150,11 @@ include("adminheader.php");
             </div> <br> <br>
             <input type="hidden" name="update_id" value="<?php echo($row['participation_id']);?>">
             <button type="submit" name="updateReview">Update</button>
-            </form>    
+            </form>
+                    <?php
+                   }?>
+                
+               
         </div>
         <?php
             }

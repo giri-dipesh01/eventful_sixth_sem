@@ -168,14 +168,14 @@ if (isset($_POST['participate'])) {
                     echo "<form action='participate.php' method='post'>";
                     echo "<input type='hidden' name='event_id' value='".$row['event_id']."'>";
                     echo "Comment <br><textarea name='comment' rows='4' cols='100'></textarea><br><br>";
-                    echo "<label for='rating'>Rate the Event-  </label>";
-                    echo "<select name='rating' required>
-                    <option value='5'>Very Satisfied</option>
-                    <option value='4'>Satisfied</option>
-                    <option value='3'>Neither Satisfied nor Unsatisfied</option>
-                    <option value='2'>Unsatisfied</option>
-                    <option value='1'>Very Unsatisfied</option>
-                </select><br><br>";
+                    echo "<label for='rating'>Rate your Event Experience-  </label>";
+                    echo    "<select name='rating' required>
+                            <option value='5'>Very Satisfied</option>
+                            <option value='4'>Satisfied</option>
+                            <option value='3'>Neither Satisfied nor Unsatisfied</option>
+                            <option value='2'>Unsatisfied</option>
+                            <option value='1'>Very Unsatisfied</option>
+                            </select><br><br>";
                     echo "<input type='submit' name='participate' value='Submit'> <br>";
                     echo "</form>";
                 } else {
